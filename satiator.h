@@ -101,6 +101,7 @@ typedef struct {
 enum satiator_mode {
     s_cdrom = 0,
     s_api,
+    s_unknown = 0xff,
 };
 
 int s_open(const char *filename, int flags);

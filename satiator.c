@@ -299,7 +299,7 @@ static int is_satiator_active(void) {
     return (CDB_REG_CR3 & 0xff) == 2;
 }
 
-static enum satiator_mode cur_mode = -1;
+static enum satiator_mode cur_mode = s_unknown;
 int s_mode(enum satiator_mode mode) {
     /* Switch between emulating a CD drive and exposing the SD card API.
      * This function returns:
@@ -307,7 +307,7 @@ int s_mode(enum satiator_mode mode) {
      *      -1: Satiator not detected
      */
 
-    if (cur_mode == -1)
+    if (cur_mode == s_unknown)
         cur_mode = is_satiator_active() ? s_api : s_cdrom;
 
     if (mode == cur_mode)
