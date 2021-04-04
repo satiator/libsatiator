@@ -386,6 +386,21 @@ int s_format_sd_card(int flags) {
     return 0;
 }
 
+// relaunch the satiator menu
+int s_reset_to_satiator(void) {
+    s_mode(s_api);
+    int (**bios_get_mpeg_rom)(uint32_t index, uint32_t size, uint32_t addr) = (void*)0x06000298;
+    int ret = (*bios_get_mpeg_rom)(2, 2, 0x200000);
+
+    if (ret < 0)
+        return ret;
+
+    void (*entry)(uint32_t) = (void*)0x200000;
+    entry(S_BOOT_NO_AUTOLOAD);
+
+    return -0x1000;
+}
+
 // }}}
 
 // Cartridge API {{{

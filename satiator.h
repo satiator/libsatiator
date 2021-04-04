@@ -126,10 +126,13 @@ int s_get_bootloader_version(uint32_t *version);
 int s_get_serial_number(uint32_t *serial);
 int s_get_sd_latency(uint16_t latency_us[], int *errors, int count);
 int s_format_sd_card(int flags);
+int s_reset_to_satiator(void);
 
 // See if there is a cartridge in the top slot providing Satiator services
 satiator_cart_header_t *s_find_cartridge(void);
 
 #define S_MAXBUF    2048
+
+#define S_BOOT_NO_AUTOLOAD  0x2f9862ac
 
 #endif // _SATIATOR_H
