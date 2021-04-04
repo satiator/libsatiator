@@ -300,7 +300,7 @@ int s_settime(uint32_t time) {
 // }}}
 
 // System API {{{
-static int is_satiator_active(void) {
+static int is_satiator_present(void) {
     // This checks the MPEG version field.
     // Real MPEG cards have version 1.
     // The Satiator has version 2.
@@ -317,8 +317,10 @@ int s_mode(enum satiator_mode mode) {
      *      -1: Satiator not detected
      */
 
-    if (cur_mode == s_unknown)
-        cur_mode = is_satiator_active() ? s_api : s_cdrom;
+    if (cur_mode == s_unknown) {
+        cur_mode = s_api;
+        s_mode(s_cdrom);
+    }
 
     if (mode == cur_mode)
         return 0;
@@ -331,7 +333,7 @@ int s_mode(enum satiator_mode mode) {
         exec_cmd(cmd, HIRQ_EFLS);
 
         // is there actually a Satiator attached?
-        if (!is_satiator_active())
+        if (!is_satiator_present())
             return -1;
 
         // stop CD "drive"
@@ -342,8 +344,7 @@ int s_mode(enum satiator_mode mode) {
     return 0;
 }
 
-// Given the filename of a disc descriptor, try and boot into it.
-int boot_disc(void);
+// Given the filename of a disc descriptor, load it into the emulated drive.
 int s_emulate(const char *filename) {
     int len = strlen(filename);
     buffer_write(filename, len);
