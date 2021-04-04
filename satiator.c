@@ -48,6 +48,7 @@ typedef enum {
 #define CDB_REG_CR2         *((volatile uint16_t *)0x2589001C)
 #define CDB_REG_CR3         *((volatile uint16_t *)0x25890020)
 #define CDB_REG_CR4         *((volatile uint16_t *)0x25890024)
+#define CDB_REG_DATATRNS    *((volatile uint32_t *)0x25818000)
 
 #define HIRQ_CMOK   0x0001
 #define HIRQ_DRDY   0x0002
@@ -325,7 +326,7 @@ int s_mode(enum satiator_mode mode) {
 
         // stop CD "drive"
         cmd_t cmd_stop = {0x0400, 0x0001, 0x0000, 0x040f};
-        exec_cmd(cmd, 0);
+        exec_cmd(cmd_stop, 0);
     }
     cur_mode = mode;
     return 0;
