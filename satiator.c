@@ -72,6 +72,13 @@ typedef enum {
 typedef uint16_t cmd_t[4];
 
 static void exec_cmd(cmd_t cr, uint16_t wait) {
+    // mask all irqs
+    uint32_t sr;
+    asm("stc sr, %0" : "=r"(sr));
+    uint32_t new_sr = sr;
+    new_sr |= 0xf0;
+    asm("ldc %0,sr": : "r" (new_sr));
+
     CDB_REG_HIRQ = ~(HIRQ_CMOK | wait);
     CDB_REG_CR1 = cr[0];
     CDB_REG_CR2 = cr[1];
@@ -80,6 +87,9 @@ static void exec_cmd(cmd_t cr, uint16_t wait) {
     while (!(CDB_REG_HIRQ & HIRQ_CMOK));
     if (wait)
         while (!(CDB_REG_HIRQ & wait));
+
+    // put interrupt level mask back
+    asm("ldc %0,sr": : "r" (sr));
 }
 
 static uint16_t sat_result[4];
