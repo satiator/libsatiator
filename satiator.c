@@ -395,9 +395,17 @@ int s_reset_to_satiator(void) {
     if (ret < 0)
         return ret;
 
+    // mask all irqs
+    uint32_t sr;
+    asm("stc sr, %0" : "=r"(sr));
+    uint32_t new_sr = sr;
+    new_sr |= 0xf0;
+    asm("ldc %0,sr": : "r" (new_sr));
+
     void (*entry)(uint32_t) = (void*)0x200000;
     entry(S_BOOT_NO_AUTOLOAD);
 
+    asm("ldc %0,sr": : "r" (sr));
     return -0x1000;
 }
 
